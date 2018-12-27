@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <string>
 using namespace std;
-
+char ui = 'y';
 int floors,floor_curr,floor_dest,floor_call; //floors: num piani, floor_curr: piano corrente, floor_dest: piano di destinazione
 bool isFree,direction,isOpen;
 
@@ -47,7 +47,10 @@ cin>>action3; if(action3=='s') { cout<<"SPEAKER ASCENSORE: ''Salve sono Antonio 
 void setup(){
   cout << "Inserire numero piani del palazzo"<<endl;
   cin >> floors;
-  uiSetup();
+  cout << "Si vuole usare un'interfaccia grafica? [y/n]"<<endl;
+
+  cin >> ui;
+  if(ui == 'y') uiSetup();
   return;
 }
 bool callElevator(){
@@ -62,9 +65,11 @@ bool callElevator(){
   if(isFree) {
     while(floor_curr != floor_dest){
        floor_curr += ( direction ? 1 : -1 );
-       drawElevator(1);
+       if(ui == 'y') drawElevator(1);
        usleep(100000);
-       drawLegend(isFree,floor_curr,floor_dest);
+       if(ui == 'y') {
+         drawLegend(isFree,floor_curr,floor_dest);
+       }else{ cout << "Piano Corrente: "<<floor_curr<<endl;}
      }
   }
   return isFree;
@@ -80,7 +85,9 @@ bool setFloor(){
        floor_curr += ( direction ? 1 : -1 );
        drawElevator(1);
        usleep(100000);
-       drawLegend(isFree,floor_curr,floor_dest);
+       if(ui == 'y') {
+         drawLegend(isFree,floor_curr,floor_dest);
+       }else{ cout << "Piano Corrente: "<<floor_curr<<endl;}
   }
   drawElevator(2);
   isOpen = true;
@@ -92,22 +99,39 @@ bool setFloor(){
 int main(){
   setup();
   isFree = true;
-  drawElevator(1);
   floor_curr = rand() % floors + 1;
-  drawLegend(isFree,floor_curr,floor_dest);
+  if(ui == 'y') {
+    drawElevator(1);
+    drawLegend(isFree,floor_curr,floor_dest);
+  }else{ cout << "Piano Corrente: "<<floor_curr<<endl;}
   while(true){
-  drawLegend(isFree,floor_curr,floor_dest);
-  scanw("%d",&floor_call);
+    if(ui == 'y'){
+     drawLegend(isFree,floor_curr,floor_dest);
+     scanw("%d",&floor_call);
+    }else{
+      cout << "Inserire piano di chiamata:"<<endl;
+    cin >> floor_call;
+    act();
+    }
   callElevator();
-  drawElevator(2);
+  if(ui == 'y') {
+    drawElevator(2);
+  }else{ cout << "apro le porte..."<<endl;}
   isOpen=true;
   isFree = false;
   sleep(1);
-  drawElevator(3);
+  if(ui == 'y') {
+    drawElevator(3);
+  }else{ cout << "chiudo le porte..."<<endl;}
   isOpen = false;
-  drawLegend(isFree,floor_curr,floor_dest);
-  scanw("%d",&floor_dest);
-  //act();
+  if(ui == 'y'){
+   drawLegend(isFree,floor_curr,floor_dest);
+   scanw("%d",&floor_dest);
+  }else{
+    cout << "Inserire piano di destinazione"<<endl;
+  cin >> floor_dest;
+  act();
+  }
   setFloor();
   isFree = true;
 }
