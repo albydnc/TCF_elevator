@@ -1,19 +1,12 @@
 #include <ncurses.h>
 #include <unistd.h>
-#include <iostream>
 #include <string>
 void rectangle(int y1, int x1, int y2, int x2);
 int drawElevator(int state);
 void drawLegend(bool isFree, int floor_curr, int floor_dest);
 void uiSetup();
-int main(){
-  uiSetup();
-  drawElevator(2);
-  drawLegend(true, 10, 12);
-  //refresh();
-  getch();
-  endwin();
-}
+extern bool isFree;
+extern int floor_curr,floor_dest;
 void uiSetup(){
   initscr();
   noecho();
@@ -31,32 +24,44 @@ void drawLegend(bool isFree, int floor_curr, int floor_dest){
   attron(COLOR_PAIR((isFree ? 3 : 2)));
   mvprintw(LINES/4+4,COLS/2+5,"  ");
   attroff(COLOR_PAIR((isFree ? 3 : 2)));
-  mvprintw(LINES/4+4,COLS/2+8,(isFree ? "Libero" : "Occupato"));
+  mvprintw(LINES/4+4,COLS/2+8,(isFree ? "Libero  " : "Occupato"));
+  refresh();
 }
 
 int drawElevator(int state){
-  rectangle(4, 4, 20, 30);
-  rectangle(2, 2, 20, 32);
+
   switch(state){
     case 0: //open
+    clear();
+    rectangle(4, 4, 20, 30);
+    rectangle(2, 2, 20, 32);
     attron(COLOR_PAIR(1));
     for(int i = 5; i<30;i++)mvvline(5,i,' ',15);
     attroff(COLOR_PAIR(1));
+    drawLegend(isFree,floor_curr,floor_dest);
+    refresh();
     break;
     case 1: //close
+    clear();
+    rectangle(4, 4, 20, 30);
+    rectangle(2, 2, 20, 32);
     mvvline(5,17,0,15);
+    drawLegend(isFree,floor_curr,floor_dest);
+    refresh();
     break;
     case 2: // opening
     clear();
     rectangle(4, 4, 20, 30);
     rectangle(2, 2, 20, 32);
     mvvline(5,17,0,15);
+    drawLegend(isFree,floor_curr,floor_dest);
     refresh();
     sleep(1);
     clear();
     rectangle(4, 4, 20, 30);
     rectangle(2, 2, 20, 32);
     mvvline(5,12,0,15);
+    drawLegend(isFree,floor_curr,floor_dest);
     attron(COLOR_PAIR(1));
     for(int i = 13; i<22;i++)mvvline(5,i,' ',15);
     attroff(COLOR_PAIR(1));
@@ -68,6 +73,7 @@ int drawElevator(int state){
     rectangle(2, 2, 20, 32);
     mvvline(5,7,0,15);
     mvvline(5,27,0,15);
+    drawLegend(isFree,floor_curr,floor_dest);
     attron(COLOR_PAIR(1));
     for(int i = 8; i<27;i++)mvvline(5,i,' ',15);
     attroff(COLOR_PAIR(1));
@@ -82,6 +88,7 @@ int drawElevator(int state){
     rectangle(2, 2, 20, 32);
     mvvline(5,7,0,15);
     mvvline(5,27,0,15);
+    drawLegend(isFree,floor_curr,floor_dest);
     attron(COLOR_PAIR(1));
     for(int i = 8; i<27;i++)mvvline(5,i,' ',15);
     attroff(COLOR_PAIR(1));
@@ -92,6 +99,7 @@ int drawElevator(int state){
     rectangle(2, 2, 20, 32);
     mvvline(5,12,0,15);
     mvvline(5,22,0,15);
+    drawLegend(isFree,floor_curr,floor_dest);
     attron(COLOR_PAIR(1));
     for(int i = 13; i<22;i++)mvvline(5,i,' ',15);
     attroff(COLOR_PAIR(1));
@@ -101,6 +109,7 @@ int drawElevator(int state){
     rectangle(4, 4, 20, 30);
     rectangle(2, 2, 20, 32);
     mvvline(5,17,0,15);
+    drawLegend(isFree,floor_curr,floor_dest);
     refresh();
     sleep(1);
     clear();
