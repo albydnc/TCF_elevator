@@ -1,18 +1,39 @@
 #include <ncurses.h>
 #include <unistd.h>
+#include <iostream>
+#include <string>
 void rectangle(int y1, int x1, int y2, int x2);
 int drawElevator(int state);
+void drawLegend(bool isFree, int floor_curr, int floor_dest);
+void uiSetup();
 int main(){
+  uiSetup();
+  drawElevator(2);
+  drawLegend(true, 10, 12);
+  //refresh();
+  getch();
+  endwin();
+}
+void uiSetup(){
   initscr();
   noecho();
   curs_set(FALSE);
   start_color();
   init_pair(1, COLOR_WHITE, COLOR_YELLOW);
-  drawElevator(2);
-  //refresh();
-  getch();
-  endwin();
+  init_pair(2, COLOR_WHITE, COLOR_RED);
+  init_pair(3, COLOR_WHITE, COLOR_GREEN);
 }
+void drawLegend(bool isFree, int floor_curr, int floor_dest){
+  mvprintw(LINES/4,COLS/2+5,"Piano Corrente: ");
+  mvprintw(LINES/4,COLS/2+21,std::to_string(floor_curr).c_str());
+  mvprintw(LINES/4+2,COLS/2+5,"Destinazione: ");
+  mvprintw(LINES/4+2,COLS/2+21,std::to_string(floor_dest).c_str());
+  attron(COLOR_PAIR((isFree ? 3 : 2)));
+  mvprintw(LINES/4+4,COLS/2+5,"  ");
+  attroff(COLOR_PAIR((isFree ? 3 : 2)));
+  mvprintw(LINES/4+4,COLS/2+8,(isFree ? "Libero" : "Occupato"));
+}
+
 int drawElevator(int state){
   rectangle(4, 4, 20, 30);
   rectangle(2, 2, 20, 32);
