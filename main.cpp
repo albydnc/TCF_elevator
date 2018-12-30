@@ -47,6 +47,7 @@ void setup(){
   return;
 }
 bool callElevator(){
+
   floor_dest=floor_call;
   int dfloor = floor_dest-floor_curr;
 
@@ -89,6 +90,7 @@ int main(){
   while(1){
   cout << "Inserire piano di chiamata"<<endl;
   cin >> floor_call;
+  if (floor_call<=floors) {
   callElevator();
   cout<<"apro le porte..."<<endl;
   isOpen=true;
@@ -100,6 +102,7 @@ int main(){
 
 //}
 
-  setFloor();
+  setFloor(); }
+  else { cout<<"il piano selezionato non è disponibile"<<endl; }
 }
 }
